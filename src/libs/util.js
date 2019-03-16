@@ -18,10 +18,10 @@ export const getFormatter=(value)=>{
 }
 
 //md5加密密码
-// export const setMd5=(str)=>{
-//   let sort ="kfsfoekfpfksmdlfs''']/"
-//   return Md5(str+sort);
-// }
+export const setMd5=(str)=>{
+  let sort ="kfsfoekfpfksmdlfs''']/"
+  return Md5(str+sort);
+}
 
 //解析菜单列表
 export const createList=(data)=>{

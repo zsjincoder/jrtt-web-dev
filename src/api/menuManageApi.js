@@ -31,3 +31,21 @@ export const deletMenu = (data) =>{
         method:'delete' ,
     })
 }
+
+//保存角色拥有的菜单
+export const saveRoleHaveMenu= (data)=>{
+    return axios.request({
+        url: '/menu/saveRoleHaveMenu',
+        data:data,
+        method: 'post'
+    })
+}
+
+//查询角色拥有的菜单
+export const queryRoles= (data)=>{
+    return axios.request({
+        url: '/menu/queryRoles',
+        params:data,
+        method: 'get'
+    })
+}

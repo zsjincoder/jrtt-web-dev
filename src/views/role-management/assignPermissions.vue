@@ -16,30 +16,41 @@
                 border
                 style="width: 100%">
                 <el-table-column
-
+                    prop="MenuTitle"
                     label="主菜单"
                     width="180">
-                    <el-checkbox-group v-model="testData">
-                        <template slot-scope="scope">
-                            <el-checkbox :label="  scope.row.Id">{{scope.row.MenuTitle}}</el-checkbox>
-                        </template>
-                    </el-checkbox-group>
+                    <template slot-scope="scope">
+                        <el-checkbox-group v-model="parentBoxData" @change="changeParentBox">
+                            <el-checkbox :label="scope.row.Id">{{scope.row.MenuTitle}}</el-checkbox>
+                        </el-checkbox-group>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     label="子菜单"
                     width="180">
+                    <template slot-scope="scope">
+                        <el-checkbox-group v-model="childBoxData" @change="changeChildBox">
+                            <div v-if="scope.row.childmenulist.length > 0" v-for="item in scope.row.childmenulist"
+                                 class="childNode">
+                                <el-checkbox :label="item.Id">{{item.MenuTitle}}</el-checkbox>
+                            </div>
+                        </el-checkbox-group>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     label="按钮权限">
+                    <template slot-scope="scope">
+                        <el-checkbox-group v-model="buttonData" @change="changeButton">
+                            <div v-if="scope.row.childmenulist.length > 0" v-for="item in scope.row.childmenulist"
+                                 class="childNode">
+                                <template v-if="item.button.length > 0" v-for="list in item.button">
+                                    <el-checkbox :label="list.buttonId">{{list.buttonName}}</el-checkbox>
+                                </template>
+                            </div>
+                        </el-checkbox-group>
+                    </template>
                 </el-table-column>
             </el-table>
-
-            <Table :columns="columns1" :data="data1" border></Table>
-            <CheckboxGroup @on-change="checkAllGroupChange">
-                <Checkbox label="香蕉"></Checkbox>
-                <Checkbox label="苹果"></Checkbox>
-                <Checkbox label="西瓜"></Checkbox>
-            </CheckboxGroup>
             <!-- 自定义modal的底部 -->
             <div slot="footer">
                 <Button style="margin-left: 8px" @click="_close()">关闭</Button>
@@ -50,7 +61,7 @@
 </template>
 
 <script>
-    import {GetMenuList} from '@/api/menuManageApi.js'
+    import {GetMenuList,saveRoleHaveMenu,queryRoles} from '@/api/menuManageApi.js'
     import {getAllButton} from '@/api/buttonManageApi.js'
 
     export default {
@@ -62,139 +73,25 @@
                 title: "新增",
                 parentList: [],
                 buttonList: [],
-                testData: [],
-                testText: "121",
+                parentBoxData: [],
+                childBoxData: [],
+                buttonData: [],
                 parentMenuId: {},
-                columns1: [
-                    {
-                        title: '主菜单权限', width: 150,
-                        render: (h, params) => {
-                            return h('div', {
-                                // on:{
-                                //     click:()=>{
-                                //         this.getRowId();
-                                //     }
-                                // }
-                            }, [
-                                h('CheckboxGroup', {
-                                    props: {
-                                        // value:this.data2,
-                                    },
-                                    on: {
-                                        "on-change": (item) => {
-                                            if (item.length > 0) {
-                                                let data = {
-                                                    id: item[0],
-                                                    menuName: params.row.MenuTitle,
-                                                    childMenuList: []
-                                                }
-                                                this.data2[params.index] = data
-                                            } else {
-                                                this.data2.splice(params.index, 1);
-                                            }
-                                        }
-                                    }
-                                }, [
-                                    h('Checkbox', {
-                                        props: {label: params.row.Id}
-                                    }, params.row.MenuTitle)
-                                ])
-                            ])
-                        }
-                    },
-                    {
-                        title: '子菜单权限', width: 200,
-                        render: (h, params) => {
-                            return h('div', [
-                                h('CheckboxGroup', {
-                                    // props: {value: this.data2}
-                                    on: {
-                                        "on-change": (item1) => {
-
-                                            console.log(item1)
-                                        }
-                                    }
-                                }, [
-                                    params.row.childmenulist.map(function (item, index) {
-                                        return h('div', {
-                                            class: 'childNode',
-                                        }, [
-                                            h('Checkbox', {
-                                                props: {label: item.Id, index: index},
-                                            }, item.MenuTitle)
-                                        ])
-
-
-                                    })
-
-                                ])
-                            ])
-
-                        }
-                    },
-                    {
-                        title: '按钮权限',
-                        render: (h, params) => {
-                            return h('div', [
-                                // params.row.childmenulist.map(function (item) {
-                                //     return h("div", {class: 'childNode'}, [
-                                //         h("CheckboxGroup", {
-                                //             props:{
-                                //                 value:self.testData
-                                //             },
-                                //             on:{
-                                //                 "on-change":(item1)=>{
-                                //                     console.log(item1)
-                                //                     console.log(self.testData)
-                                //                 }
-                                //             }
-                                //         }, [
-                                //             item.button.map(function (button) {
-                                //                 return h('Checkbox', {
-                                //                     props: {label: button.buttonName}
-                                //                 })
-                                //             })
-                                //         ])
-                                //     ])
-                                // })
-                                h("checkbox-group", {
-                                    props: {
-                                        vModel: this.testData
-                                    },
-                                    on: {
-                                        "on-change": (val) => {
-                                            console.log(this.testData)
-                                        }
-                                    }
-                                }, [
-                                    h("checkbox", {
-                                        props: {label: 123}
-                                    }),
-                                    h("checkbox", {
-                                        props: {label: 321}
-                                    }),
-                                    h("Input", {
-                                        props: {
-                                            value: this.testText
-                                        }
-                                    })
-                                ])
-                            ])
-                        }
-                    }
-                ],//表头
                 data2: [],
                 data1: [],//表格数据
-
             }
         },
         created() {
             this.getParentMenuLsit();
+            queryRoles({roleId:this.rowId}).then(res =>{
+                if(res.data.code == 0){
+                    this.parentBoxData = res.data.data.parentMenuList != null?res.data.data.parentMenuList:[];
+                    this.childBoxData = res.data.data.childMenuList != null?res.data.data.childMenuList:[];
+                    this.buttonData = res.data.data.buttonList;
+                }
+            })
         },
         methods: {
-            checkAllGroupChange(item) {
-                console.log(item)
-            },
             getParentMenuLsit() {
                 GetMenuList().then(res => {
                     if (res.data.code == 0) {
@@ -248,15 +145,81 @@
                     let key = {};
                     if (this.buttonList[i].menu_id == childMenuId) {
                         key.buttonName = this.buttonList[i].button_name;
-                        key.buttonId = this.buttonList[i].menu_id;
+                        key.buttonId = this.buttonList[i].id;
                         buttonList.push(key)
                     }
 
                 }
                 return buttonList
             },
-            getRowId() {
-                console.log(this.data2);
+            changeParentBox(item) {
+                this.childBoxData = [];
+                this.buttonData = [];
+                if (item.length > 0) {
+                    for (let i = 0; i < item.length; i++) {
+                        for (let j = 0; j < this.data1.length; j++) {
+                            if (item[i] == this.data1[j].Id) {
+                                if (this.data1[j].childmenulist && this.data1[j].childmenulist.length > 0) {
+                                    for (let x = 0; x < this.data1[j].childmenulist.length; x++) {
+                                        this.childBoxData.push(this.data1[j].childmenulist[x].Id)
+                                        if (this.data1[j].childmenulist[x].button && this.data1[j].childmenulist[x].button.length > 0) {
+                                            for (let y = 0; y < this.data1[j].childmenulist[x].button.length; y++) {
+                                                this.buttonData.push(this.data1[j].childmenulist[x].button[y].buttonId)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            changeChildBox(item) {
+                console.log(this.childBoxData)
+            },
+            changeButton() {
+                console.log(this.buttonData)
+            },
+            _close() {
+                this.$emit("close")
+            },
+            _saveBtn() {
+                this.data2 = [];
+                if (this.parentBoxData.length > 0) {
+                    for (let i = 0; i < this.parentBoxData.length; i++) {
+                        for (let j = 0; j < this.data1.length; j++) {
+                            if (this.parentBoxData[i] == this.data1[j].Id) {
+                                if (this.data1[j].childmenulist && this.data1[j].childmenulist.length > 0) {
+                                    for (let x = 0; x < this.data1[j].childmenulist.length; x++) {
+                                        let parentData = {
+                                            menuId:"",
+                                            buttonList:[]
+                                        }
+                                        if(this.childBoxData.indexOf(this.data1[j].childmenulist[x].Id) !== -1){
+                                            parentData.menuId = this.data1[j].childmenulist[x].Id;
+                                        }
+                                        if (this.data1[j].childmenulist[x].button && this.data1[j].childmenulist[x].button.length > 0) {
+                                            for (let y = 0; y < this.data1[j].childmenulist[x].button.length; y++) {
+                                                if(this.buttonData.indexOf(this.data1[j].childmenulist[x].button[y].buttonId) !== -1){
+                                                    parentData.buttonList.push({buttonId:this.data1[j].childmenulist[x].button[y].buttonId})
+                                                }
+                                                //this.buttonData.push(this.data1[j].childmenulist[x].button[y].buttonId)
+                                            }
+                                        }
+                                        if (parentData.menuId != ""){
+                                            this.data2.push(parentData)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                saveRoleHaveMenu({roleId:this.rowId,menuList:this.data2}).then(res =>{
+                    if(res.data.code == 0){
+
+                    }
+                })
             }
         }
 
