@@ -11,7 +11,7 @@ export const userLogin = (data)=>{
 //用户注册
 export const userRegister = (data)=>{
   return axios.request({
-    url: '/register',
+    url: '/user/Register',
     data:data,
     method: 'post'
   });
@@ -23,5 +23,15 @@ export const GetStudentInfo = (data)=>{
         url: '/student/GetStudentInfo',
         params:data,
         method: 'get'
+    })
+}
+
+
+export const modifyUserInfo = (data,pageData)=>{
+    return axios.request({
+        url: `/user/modifyUserInfo?pageSize=${pageData.pageSize}&pageNum=${pageData.pageNum}&total=${pageData.total}`,
+        method: 'post',
+        data:data,
+        headers:{'Content-Type': 'multipart/form-data'}
     })
 }

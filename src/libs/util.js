@@ -15,3 +15,28 @@ export const getSessionStore=(key)=>{
 //   let sort ="kfsfoekfpfksmdlfs''']/"
 //   return Md5(str+sort);
 // }
+
+//解析菜单列表
+export const createList=(data)=>{
+    let menu = [];
+    for(let i =0 ;i<data.length;i++){
+        let listData = {};
+        let pid = "";
+        if(data[i].ParentId ==="/"){
+            listData = data[i];
+            pid = data[i].Id;
+            listData.childList = childItem(data ,pid);
+            menu.push(listData);
+        }
+    }
+    return menu
+}
+export const childItem= (data , pid)=>{
+    let childList = [];
+    for (let i =0;i<data.length;i++){
+        if (data[i].ParentId === pid){
+            childList.push(data[i]);
+        }
+    }
+    return childList
+}
