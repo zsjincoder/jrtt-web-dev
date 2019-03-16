@@ -66,6 +66,7 @@ export default{
   line-height: 30px;
   border: @base-border;
   display: flex;
+   background-color: #f3d19e;
   .search-name,
   .serach-up-name{
     font-weight: @normal-bold-font;
