@@ -23,58 +23,87 @@
                     <span class="btn-bell-badge" v-if="message"></span>
                 </div>
                 <!-- 用户头像 -->
-                <div class="user-avator"><img src="static/img/img.jpg"></div>
+                <div class="user-avator"><img :src="newuserInfo.Icon"></div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{username}} <i class="el-icon-caret-bottom"></i>
+                        {{newuserInfo.UserName}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <a href="http://blog.gdfengshuo.com/about/" target="_blank">
-                            <el-dropdown-item>关于作者</el-dropdown-item>
-                        </a>
-                        <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
-                            <el-dropdown-item>项目仓库</el-dropdown-item>
-                        </a>
-                        <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
+                        <el-dropdown-item command="userinfo">个人中心</el-dropdown-item>
+                        <el-dropdown-item command="modifyPwd">修改密码</el-dropdown-item>
+                        <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
+        <modif-user-data v-if="Flag" :modFlag="Flag" @updateData="update" @cancel="cancelBalck"></modif-user-data>
+        <modify-pass-word v-show="Flag1" :modFlag1="Flag1" @cancel1="cancelBalck1"></modify-pass-word>
     </div>
 </template>
 <script>
     import bus from '../common/bus';
+    import ModifUserData from "../page/modifUserData";
+    import modifyPassWord from "../page/modifyPassWord";
+
     export default {
+        components: {ModifUserData, modifyPassWord},
         data() {
             return {
                 collapse: false,
                 fullscreen: false,
-                name: 'linxin',
-                message: 2
+                Flag: false,
+                Flag1: false,
+                message: 2,
+                data: "",//临时存储userInfo
             }
         },
-        computed:{
-            username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
+        created() {
+            this.updateUserInfo();
+        },
+        computed: {
+            newuserInfo: function () {
+                let userInfoString = this.data;
+                return JSON.parse(userInfoString)
             }
         },
-        methods:{
+        methods: {
+            //更新seession里的userInfo
+            updateUserInfo() {
+                this.data = sessionStorage.getItem("userInfo");
+            },
+            update() {
+                window.location.reload(true);
+            },
             // 用户名下拉菜单选择事件
             handleCommand(command) {
-                if(command == 'loginout'){
+                if (command == 'loginout') {//点击退出登陆执行
                     localStorage.removeItem('ms_username')
                     this.$router.push('/login');
+                } else if (command == 'userinfo') {//点击个人中心执行
+                    this.Flag = true;
+                } else if (command == 'modifyPwd') {//点击修改密码执行
+                    this.Flag1 = true;
                 }
             },
+            //相应子组件modifUserData.vue的取消并关闭修改资料弹窗
+            cancelBalck() {
+                this.Flag = false;
+            },
+            cancelBalck1() {
+                this.Flag1 = false;
+            },
             // 侧边栏折叠
-            collapseChage(){
+            collapseChage() {
                 this.collapse = !this.collapse;
                 bus.$emit('collapse', this.collapse);
             },
+            //修改资料成功返回并更新主页
+            updateData() {
+
+            },
             // 全屏事件
-            handleFullScreen(){
+            handleFullScreen() {
                 let element = document.documentElement;
                 if (this.fullscreen) {
                     if (document.exitFullscreen) {
@@ -100,7 +129,7 @@
                 }
                 this.fullscreen = !this.fullscreen;
             }
-        }
+        },
     }
 </script>
 <style scoped>
@@ -112,32 +141,38 @@
         font-size: 22px;
         color: #fff;
     }
-    .collapse-btn{
+
+    .collapse-btn {
         float: left;
         padding: 0 21px;
         cursor: pointer;
         line-height: 70px;
     }
-    .header .logo{
+
+    .header .logo {
         float: left;
-        width:250px;
+        width: 250px;
         line-height: 70px;
     }
-    .header-right{
+
+    .header-right {
         float: right;
         padding-right: 50px;
     }
-    .header-user-con{
+
+    .header-user-con {
         display: flex;
         height: 70px;
         align-items: center;
     }
-    .btn-fullscreen{
+
+    .btn-fullscreen {
         transform: rotate(45deg);
         margin-right: 5px;
         font-size: 24px;
     }
-    .btn-bell, .btn-fullscreen{
+
+    .btn-bell, .btn-fullscreen {
         position: relative;
         width: 30px;
         height: 30px;
@@ -145,7 +180,8 @@
         border-radius: 15px;
         cursor: pointer;
     }
-    .btn-bell-badge{
+
+    .btn-bell-badge {
         position: absolute;
         right: 0;
         top: -2px;
@@ -155,26 +191,32 @@
         background: #f56c6c;
         color: #fff;
     }
-    .btn-bell .el-icon-bell{
+
+    .btn-bell .el-icon-bell {
         color: #fff;
     }
-    .user-name{
+
+    .user-name {
         margin-left: 10px;
     }
-    .user-avator{
+
+    .user-avator {
         margin-left: 20px;
     }
-    .user-avator img{
+
+    .user-avator img {
         display: block;
-        width:40px;
-        height:40px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
     }
-    .el-dropdown-link{
+
+    .el-dropdown-link {
         color: #fff;
         cursor: pointer;
     }
-    .el-dropdown-menu__item{
+
+    .el-dropdown-menu__item {
         text-align: center;
     }
 </style>

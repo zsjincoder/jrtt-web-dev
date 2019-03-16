@@ -7,7 +7,7 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/dashboard'
+            redirect: '/login'
         },
         {
             path: '/',
@@ -20,66 +20,46 @@ export default new Router({
                     meta: { title: '系统首页' }
                 },
                 {
-                    path: '/table',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve),
-                    meta: { title: '基础表格' }
-                },
-                {
-                    path: '/tabs',
-                    component: resolve => require(['../components/page/Tabs.vue'], resolve),
-                    meta: { title: 'tab选项卡' }
-                },
-                {
-                    path: '/form',
-                    component: resolve => require(['../components/page/BaseForm.vue'], resolve),
-                    meta: { title: '基本表单' }
-                },
-                {
                     // 富文本编辑器组件
                     path: '/editor',
                     component: resolve => require(['../components/page/VueEditor.vue'], resolve),
                     meta: { title: '富文本编辑器' }
                 },
                 {
-                    // markdown组件
-                    path: '/markdown',
-                    component: resolve => require(['../components/page/Markdown.vue'], resolve),
-                    meta: { title: 'markdown编辑器' }
-                },
-                {
-                    // 图片上传组件
-                    path: '/upload',
-                    component: resolve => require(['../components/page/Upload.vue'], resolve),
-                    meta: { title: '文件上传' }
-                },
-                {
-                    // vue-schart组件
-                    path: '/charts',
-                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve),
-                    meta: { title: 'schart图表' }
-                },
-                {
-                    // 拖拽列表组件
-                    path: '/drag',
-                    component: resolve => require(['../components/page/DragList.vue'], resolve),
-                    meta: { title: '拖拽列表' }
-                },
-                {
-                    // 权限页面
-                    path: '/permission',
-                    component: resolve => require(['../components/page/Permission.vue'], resolve),
-                    meta: { title: '权限测试', permission: true }
-                },
-                {
                     path: '/showStudent',
                     component: resolve => require(['../views/show-student/showStudent.vue'], resolve),
                     meta: { title: '学生信息展示', permission: true }
                 },
+                {
+                    path: '/userManagement',
+                    component: resolve => require(['../views/user-management/userManagement.vue'], resolve),
+                    meta: { title: '用户管理'}
+                },
+                {
+                    path: '/roleManagement',
+                    component: resolve => require(['../views/role-management/roleManagement.vue'], resolve),
+                    meta: { title: '角色管理'}
+                },
+                {
+                    path: '/menuManagement',
+                    component: resolve => require(['../views/menu-management/menuManagement.vue'], resolve),
+                    meta: { title: '菜单管理'}
+                },
+                {
+                    path: '/buttonManagement',
+                    component: resolve => require(['../views/button-management/buttonManagement.vue'], resolve),
+                    meta: { title:'按钮管理'}
+                }
+
             ]
         },
         {
             path: '/login',
             component: resolve => require(['../components/page/Login.vue'], resolve)
+        },
+        {
+            path: '/register',
+            component: resolve => require(['../components/page/register.vue'], resolve)
         },
         {
             path: '/404',
@@ -92,6 +72,7 @@ export default new Router({
         {
             path: '*',
             redirect: '/404'
-        }
+        },
+
     ]
 })

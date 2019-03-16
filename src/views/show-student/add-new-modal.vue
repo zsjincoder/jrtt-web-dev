@@ -22,6 +22,16 @@
                 <FormItem label="系别" prop="Department">
                     <Input v-model="formData.Department" placeholder="请输入系别"></Input>
                 </FormItem>
+                <FormItem label="住址" prop="Address">
+                    <Input v-model="formData.Address" placeholder="请输入住址"></Input>
+                </FormItem>
+                <FormItem label="学生编号" prop="Id"  >
+                    <InputNumber  v-model="formData.Id" placeholder="请输入学生编号"></InputNumber>
+                </FormItem>
+                <FormItem label="生日" prop="Birth">
+                    <Input v-model="formData.Birth" placeholder="请输入生日"></Input>
+                </FormItem>
+
 
             </Form>
             <!-- 自定义modal的底部 -->
@@ -33,7 +43,7 @@
     </div>
 </template>
 <script>
-    import {GetStudentInfo} from '@/api/user.js'
+    import {GetStudentInfo,AddStudentInfo,ModifyStudentInfo} from '@/api/user.js'
 
     export default {
         props: {controllModal: Boolean, isModify: Boolean, id: String},
@@ -46,11 +56,12 @@
                     Name: '',
                     Sex: '',
                     Department: '',
+                    Id:null,
+                    Address:'',
+                    Birth:''
                 },
                 ruleValidate: {
-                    Name: [
-                        {required: true, type: 'string', message: '请输入姓名', trigger: 'blur'},
-                    ],
+                    Name: [{required: true, type: 'string', message: '请输入姓名', trigger: 'blur'}],
                     Sex: [
                         {required: true, type: 'string', message: '请输入性别', trigger: 'blur'}
                     ],
@@ -65,9 +76,23 @@
             this.openModal();
         },
         methods: {
-            // 保存角色的方法
+            // 保存学生信息
             saveNewRoleFn(options) {
-
+                AddStudentInfo(options).then(res => {
+                    if(res.data.code==0){
+                        this.$Message.success("新增成功");
+                        this.closeRefresh();
+                    }
+                })
+            },
+            //修改学生信息
+            saveModifyStudentInfo(data){
+                ModifyStudentInfo(data).then(res => {
+                    if(res.data.code==0){
+                        this.$Message.success("修改成功");
+                        this.closeRefresh();
+                    }
+                })
             },
             // 打开弹窗
             openModal() {
@@ -84,20 +109,28 @@
                     this.formData = res.data.data;
                 })
             },
-            // 点击关闭弹窗,清空验证标识
+            // 点击关闭弹窗
             _close(name) {
                 this.$emit('on-action-modal', !this.controllModal);
             },
+            //新增成功关闭弹窗并刷新父页面
+            closeRefresh(){
+                this.$emit('on-action-modal', !this.controllModal);
+                this.$emit('refresh');
+            },
             // 点击保存关闭弹窗
             _saveBtn(name) {
-                let self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        let options = {};
-                        options.roleName = self.formData.roleName;
-                        options.status = self.formData.status;
-                        options.roleDescription = self.formData.roleDescription;
-                        self.saveNewRoleFn(options);
+                        let studentInfo=[];
+                        if(!this.isModify){
+                            studentInfo.push(this.formData);
+                            // this.formData.Id = Number(this.formData.Id);
+                            this.saveNewRoleFn(studentInfo);
+                        }else {
+                            this.saveModifyStudentInfo(this.formData);
+                        }
+
                     } else {
                         this.$Message.error('必填项不能为空');
                     }

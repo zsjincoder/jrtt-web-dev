@@ -1,5 +1,5 @@
 import Axios from 'axios'
-const baseURL="http://127.0.0.1:8033/api"
+const baseURL="http://148.70.100.22:8033/api"
 import {getSessionStore} from "@/libs/util.js"
 let AUTH_TOKEN=(function(){
   return getSessionStore("token");
@@ -10,7 +10,7 @@ let conf = {
   headers: {
     'Content-Type': 'application/json; charset=utf-8',
     //'X-URL-PATH': location.pathname
-    'Token':getSessionStore("token")
+    // 'Token':getSessionStore("token")
   }
 }
 let instance = Axios.create(conf);
