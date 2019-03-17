@@ -29,47 +29,48 @@
         data() {
             return {
                 collapse: false,
-                items: [
-                    {
-                        icon: 'el-icon-setting',
-                        index: 'dashboard',
-                        title: '系统首页',
-                    },
-                    {
-                        icon: 'el-icon-warning',
-                        index: 'showStudent',
-                        title: '学生信息展示'
-                    },
-                    {
-                        icon: 'el-icon-error',
-                        index: '404',
-                        title: '404页面'
-                    },
-                    {
-                        icon: 'el-icon-setting',
-                        index: '',
-                        title: '系统管理',
-                        subs:[
-                            {
-                                index:"userManagement",
-                                title:"用户管理"
-                            },
-                            {
-                                index:"roleManagement",
-                                title:"角色管理"
-                            },
-                            {
-                                index:"menuManagement",
-                                title:"菜单管理"
-                            },
-                            {
-                                index:"buttonManagement",
-                                title:"按钮管理"
-                            }
-                        ]
-                    }
-
-                ]
+                // items: [
+                //     {
+                //         icon: 'el-icon-setting',
+                //         index: 'dashboard',
+                //         title: '系统首页',
+                //     },
+                //     {
+                //         icon: 'el-icon-warning',
+                //         index: 'showStudent',
+                //         title: '学生信息展示'
+                //     },
+                //     {
+                //         icon: 'el-icon-error',
+                //         index: '404',
+                //         title: '404页面'
+                //     },
+                //     {
+                //         icon: 'el-icon-setting',
+                //         index: '',
+                //         title: '系统管理',
+                //         subs:[
+                //             {
+                //                 index:"userManagement",
+                //                 title:"用户管理"
+                //             },
+                //             {
+                //                 index:"roleManagement",
+                //                 title:"角色管理"
+                //             },
+                //             {
+                //                 index:"menuManagement",
+                //                 title:"菜单管理"
+                //             },
+                //             {
+                //                 index:"buttonManagement",
+                //                 title:"按钮管理"
+                //             }
+                //         ]
+                //     }
+                //
+                // ]
+                items:[]
             }
         },
         computed:{
@@ -82,6 +83,8 @@
             bus.$on('collapse', msg => {
                 this.collapse = msg;
             })
+            //获取菜单列表
+            this.items =JSON.parse(sessionStorage.getItem("MenuList"))
         }
     }
 </script>

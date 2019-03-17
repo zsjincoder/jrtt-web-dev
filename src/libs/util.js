@@ -19,7 +19,7 @@ export const getFormatter=(value)=>{
 
 //md5加密密码
 export const setMd5=(str)=>{
-  let sort ="kfsfoekfpfksmdlfs''']/"
+  let sort =  "kfsfoekfpfksmdlfs''']/";
   return Md5(str+sort);
 }
 
@@ -47,3 +47,17 @@ export const childItem= (data , pid)=>{
     }
     return childList
 }
+
+///判断用户是否拥有按钮权限
+export const judgeButtonRole=(btns,path)=>{
+    let btnData =btns;
+    let buttonData =JSON.parse(sessionStorage.getItem("ButtonList"));
+    for(let i in btns){
+        buttonData.map(item =>{
+            if(item.buttonPath == path && item.buttonCode == i){
+                btnData[i] = true
+            }
+        })
+    }
+    return btnData
+};

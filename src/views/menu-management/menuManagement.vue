@@ -5,13 +5,13 @@
                 <Card>
                     <Row slot="title">
                         <Col style="text-align: center" span="8">
-                            <Button type="primary" @click="addMenu">新增</Button>
+                            <Button type="primary" @click="addMenu" v-if="btns['add-menuManagement']">新增</Button>
                         </Col>
                         <Col style="text-align: center" span="8">
-                            <Button type="success" @click="modifyMenu">修改</Button>
+                            <Button type="success" @click="modifyMenu" v-if="btns['edit-menuMangament']">修改</Button>
                         </Col>
                         <Col style="text-align: center" span="8">
-                            <Button type="error" @click="deleteMenu">删除</Button>
+                            <Button type="error" @click="deleteMenu" v-if="btns['delete-menuManagement']">删除</Button>
                         </Col>
                     </Row>
                     <Tree :data="menu" @on-select-change="selectItem"></Tree>
@@ -46,6 +46,7 @@
 <script>
     import {GetMenuList,deletMenu} from '@/api/menuManageApi.js'
     import addModifyMenu from './add-modify-menu.vue'
+    import {judgeButtonRole} from '@/libs/util.js'
     export default {
         name: "menuManagement",
         components:{addModifyMenu},
@@ -56,7 +57,11 @@
                 menuItemId: "",
                 isFlag:false,
                 isConfig:false,
-
+                btns:{
+                    "delete-menuManagement":false,
+                    "add-menuManagement":false,
+                    "edit-menuMangament":false
+                }
             }
         },
         methods: {
@@ -155,6 +160,7 @@
             }
         },
         created() {
+            this.btns = judgeButtonRole(this.btns,this.$route.path)
             this.getMenuList();
         }
     }

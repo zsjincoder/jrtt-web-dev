@@ -78,7 +78,8 @@
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if (command == 'loginout') {//点击退出登陆执行
-                    localStorage.removeItem('ms_username')
+                    localStorage.removeItem('ms_username');
+                    sessionStorage.clear()
                     this.$router.push('/login');
                 } else if (command == 'userinfo') {//点击个人中心执行
                     this.Flag = true;

@@ -24,6 +24,7 @@
 
 <script>
     import {userLogin} from '@/api/user.js'
+
     export default {
         data: function () {
             return {
@@ -47,9 +48,29 @@
                     if (valid) {
                         userLogin(this.ruleForm).then(res => {
                             if (res.data.code == 0) {
-                                sessionStorage.setItem("token",res.data.data.token);
-                                sessionStorage.setItem("userInfo",JSON.stringify(res.data.data.userInfo));
-                                this.$router.push('/');
+                                let MenuList = [];
+                                let parentList = [];
+                                let menuData = res.data.data.menuList;
+                                menuData.map((item) => {
+                                    if (item.parentId != "" && parentList.indexOf(item.parentId) == -1){
+                                        parentList.push(item.parentId)
+                                        let data ={
+                                            icon:item.parentIcon,
+                                            index:item.parentPath,
+                                            title:item.parnetTitle,
+                                        }
+                                        let childMenu = this.getChildMenu(item.parentId ,menuData);
+                                        if (childMenu.length >0){
+                                            data.subs = childMenu
+                                        }
+                                        MenuList.push(data)
+                                    }
+                                });
+                                sessionStorage.setItem("MenuList", JSON.stringify(MenuList));
+                                sessionStorage.setItem("ButtonList", JSON.stringify(res.data.data.buttonList));
+                                sessionStorage.setItem("token", res.data.data.token);
+                                sessionStorage.setItem("userInfo", JSON.stringify(res.data.data.userInfo));
+                                this.$router.push('/dashboard');
                             } else {
                                 this.$Message.error("登陆失败");
                             }
@@ -64,6 +85,21 @@
             registerForm() {
                 console.log(123);
                 this.$router.push('/register')
+            },
+            //获取菜单列表
+            getChildMenu(id ,menuData) {
+                let childMenu = []
+                menuData.map(item =>{
+                   if(item.parentId == id){
+                       let data ={
+                           index:item.routePath,
+                           title:item.menuTitle,
+                           icon:item.menuIcon,
+                       }
+                       childMenu.push(data)
+                   }
+                });
+                return childMenu
             }
 
         }

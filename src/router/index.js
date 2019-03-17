@@ -7,10 +7,14 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/dashboard'
+            redirect: '/login'
         },
         {
-            path: '/',
+            path: '/login',
+            component: resolve => require(['../components/page/Login.vue'], resolve)
+        },
+        {
+            path: '/home',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[
@@ -52,10 +56,6 @@ export default new Router({
                 }
 
             ]
-        },
-        {
-            path: '/login',
-            component: resolve => require(['../components/page/Login.vue'], resolve)
         },
         {
             path: '/register',

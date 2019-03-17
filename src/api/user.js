@@ -31,7 +31,6 @@ export const ModifyPassWord = (data) => {
 }
 
 
-
 //参考部分，后期删除
 //获取学生信息
 export const GetStudentInfo = (data) => {
