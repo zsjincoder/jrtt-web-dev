@@ -84,7 +84,7 @@
                 this.collapse = msg;
             })
             //获取菜单列表
-            this.items =JSON.parse(sessionStorage.getItem("MenuList"))
+             this.items =JSON.parse(sessionStorage.getItem("MenuList"))
         }
     }
 </script>

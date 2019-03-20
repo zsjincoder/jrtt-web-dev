@@ -213,7 +213,7 @@
                         }
                     }
                 }
-                saveRoleHaveMenu({roleId:this.rowId,menuList:this.data2}).then(res =>{
+                saveRoleHaveMenu({roleId:this.rowId,menuList:this.data2,parentData:this.parentBoxData}).then(res =>{
                     if(res.data.code == 0){
                         this.$emit("close")
                         this.$Message.success("操作成功")

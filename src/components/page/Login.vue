@@ -20,6 +20,7 @@
                 </div>
                 <p style="font-size:12px;line-height:30px;color:#999; text-align: center">Tips : 用户名和密码随便填。</p>
             </el-form>
+            <i class="iconfont icon-dianpu"></i>
         </div>
     </div>
 </template>
@@ -54,14 +55,14 @@
                                 let parentList = [];
                                 let menuData = res.data.data.menuList;
                                 menuData.map((item) => {
-                                    if (item.parentId != "" && parentList.indexOf(item.parentId) == -1) {
-                                        parentList.push(item.parentId)
+                                    if (item.parentId =='/' && parentList.indexOf(item.id) == -1) {
+                                        parentList.push(item.id)
                                         let data = {
-                                            icon: item.parentIcon,
-                                            index: item.parentPath,
-                                            title: item.parnetTitle,
+                                            index: item.routePath,
+                                            title: item.menuTitle,
+                                            icon: item.menuIcon,
                                         }
-                                        let childMenu = this.getChildMenu(item.parentId, menuData);
+                                        let childMenu = this.getChildMenu(item.id, menuData);
                                         if (childMenu.length > 0) {
                                             data.subs = childMenu
                                         }
