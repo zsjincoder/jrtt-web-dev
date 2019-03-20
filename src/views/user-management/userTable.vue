@@ -30,33 +30,33 @@
                 :min-width="item.minWidth"
                 :label="item.label">
             </el-table-column>
-            <el-table-column label="操作" fixed="right" width="250">
+            <el-table-column label="操作" fixed="right" width="250" v-if="btns['edit-userManagement']||btns['delete-userManagement']||btns['Designatedadministrator-userManagement']||btns['Assignroles-userManagement']">
                 <template slot-scope="scope">
                     <el-button-group>
                         <el-button
                             size="mini"
                             title="编辑"
                             icon='el-icon-edit'
-                            @click="editUserInfo(scope.row.Id)"></el-button>
+                            @click="editUserInfo(scope.row.Id)" v-if="btns['edit-userManagement']"></el-button>
                         <el-button
                             size="mini"
                             type="danger"
                             title="删除"
                             icon="el-icon-delete"
-                            @click="handleDelete(scope.row.Id)"></el-button>
+                            @click="handleDelete(scope.row.Id)" v-if="btns['delete-userManagement']"></el-button>
                         <el-button
                             size="mini"
                             type="primary"
                             title="指定管理员"
                             icon="el-icon-sort"
-                            v-if="Flag=='1'"
+                            v-if="Flag=='1'&&btns['Designatedadministrator-userManagement']"
                             @click="handleSetAdmin(scope.row.Id)"></el-button>
                         <el-button
                             size="mini"
                             type="success"
                             title="分配角色"
                             icon="el-icon-edit-outline"
-                            v-if="Flag=='0'"
+                            v-if="Flag=='0'&&btns['Assignroles-userManagement']"
                             @click="handleSetRole(scope.row.Id)">分配角色</el-button>
                     </el-button-group>
                 </template>
@@ -83,6 +83,7 @@
 <script>
     import {GetUserList, DeleteUser, SetAdmin} from '@/api/userManageApi.js'
     import {formatSex} from '@/libs/Formatter.js'
+    import {judgeButtonRole} from '@/libs/util.js'
     import modifyUserInfo from './modify-user-info.vue'
     import prescribedRole from './prescribed-role.vue'
 
@@ -96,6 +97,12 @@
                 isClose1:false,//弹窗1状态值
                 rowId: "",//当前行用户ID
                 tableData: [],//表格数据
+                btns: {
+                    'Assignroles-userManagement':false,//角色分配
+                    'edit-userManagement':false,//编辑
+                    'delete-userManagement':false,//删除
+                    'Designatedadministrator-userManagement':false//指定管理员
+                },
                 columns: [
                     {prop: "UserName", label: "用户名", minWidth: this.$golbal.littleShortWidth},
                     {prop: "Mobile", label: "手机号", minWidth: this.$golbal.shortWidth},
@@ -215,7 +222,8 @@
         }
         ,
         created() {
-            this.getUserInfo({})
+            this.btns=judgeButtonRole(this.btns,this.$route.path);//按钮是否显示处理
+            this.getUserInfo({});
         }
         ,
         watch: {

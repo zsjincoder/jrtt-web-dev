@@ -12,7 +12,7 @@
                     <Col span="12">
                         <div style="float: right">
                             <Button type="primary" icon="ios-search" @click="Query">查询</Button>
-                            <Button type="success" icon="md-add" @click="AddRole">新增</Button>
+                            <Button type="success" icon="md-add" @click="AddRole" v-if="btns['add-roleManagement']">新增</Button>
                         </div>
 
                     </Col>
@@ -52,26 +52,26 @@
                     :min-width="item.minWidth"
                     :label="item.label">
                 </el-table-column>
-                <el-table-column label="操作" fixed="right" width="250">
+                <el-table-column label="操作" fixed="right" width="250" v-if="btns['edit-roleManagement']||btns['delete-roleManagement']||btns['Assignpermissions-roleManagement']">
                     <template slot-scope="scope">
                         <el-button-group>
                             <el-button
                                 size="mini"
                                 title="编辑"
                                 icon='el-icon-edit'
-                                @click="editRoleInfo(scope.row.Id)"></el-button>
+                                @click="editRoleInfo(scope.row.Id)" v-if="btns['edit-roleManagement']"></el-button>
                             <el-button
                                 size="mini"
                                 type="danger"
                                 title="删除"
                                 icon="el-icon-delete"
-                                @click="handleDelete(scope.row.Id)"></el-button>
+                                @click="handleDelete(scope.row.Id)" v-if="btns['delete-roleManagement']"></el-button>
                             <el-button
                                 size="mini"
                                 type="primary"
                                 title="分配权限"
                                 icon="el-icon-sort"
-                                @click="handleSetPermissions(scope.row.Id)">分配权限</el-button>
+                                @click="handleSetPermissions(scope.row.Id)" v-if="btns['Assignpermissions-roleManagement']">分配权限</el-button>
                         </el-button-group>
                     </template>
                 </el-table-column>
@@ -95,6 +95,7 @@
 
 <script>
     import {GetRoleList,DeleteRole} from '@/api/roleManageApi.js'
+    import {judgeButtonRole} from '@/libs/util.js'
     import addModifyRole from './add-modify-role.vue'
     import roleManagement from './roleManagement.vue'
     import assignPermissions from "./assignPermissions";
@@ -108,6 +109,12 @@
                 isClose1:false,
                 rowId: "",//当前行用户ID
                 isConfig:false,
+                btns: {
+                    'add-roleManagement':false,//角色新增
+                    'edit-roleManagement':false,//角色编辑
+                    'delete-roleManagement':false,//角色删除
+                    'Assignpermissions-roleManagement':false//角色权限分配
+                },
                 headerData: {
                     roleName: '',
                 },
@@ -127,6 +134,9 @@
                 GetRoleList(data).then(res => {
                     if (res.data.code == 0) {
                         this.roleData = res.data.data.data;
+                        this.pageData.pageNum=res.data.data.pageNum;
+                        this.pageData.total=res.data.data.total;
+                        this.pageData.pageSize=res.data.data.pageSize;
                     }
                 })
             },//获得角色信息列表
@@ -184,6 +194,7 @@
         },
         created() {
             this.getRoleList(this.pageData);
+            this.btns=judgeButtonRole(this.btns,this.$route.path)
         }
     }
 </script>

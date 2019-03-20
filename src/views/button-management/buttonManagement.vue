@@ -12,7 +12,7 @@
                     <Col span="12">
                         <div style="float: right">
                             <Button type="primary" icon="ios-search" @click="Query">查询</Button>
-                            <Button type="success" icon="md-add" @click="AddButton">新增</Button>
+                            <Button type="success" icon="md-add" @click="AddButton" v-if="btns['add-buttonManagement']">新增</Button>
                         </div>
                     </Col>
                 </Row>
@@ -48,20 +48,20 @@
                     :min-width="item.minWidth"
                     :label="item.label">
                 </el-table-column>
-                <el-table-column label="操作" fixed="right" width="200">
+                <el-table-column label="操作" fixed="right" width="200" v-if="btns['edit-buttonManagement']||btns['edit-buttonManagement']||btns['delete-buttonManagement']">
                     <template slot-scope="scope">
                         <el-button-group>
                             <el-button
                                 size="mini"
                                 title="编辑"
                                 icon='el-icon-edit'
-                                @click="editButtonInfo(scope.row.Id)"></el-button>
+                                @click="editButtonInfo(scope.row.Id)" v-if="btns['edit-buttonManagement']"></el-button>
                             <el-button
                                 size="mini"
                                 type="danger"
                                 title="删除"
                                 icon="el-icon-delete"
-                                @click="handleDelete(scope.row.Id)"></el-button>
+                                @click="handleDelete(scope.row.Id)" v-if="btns['delete-buttonManagement']"></el-button>
                         </el-button-group>
                     </template>
                 </el-table-column>
@@ -84,6 +84,7 @@
 
 <script>
     import {GetButtionList,DeleteButton}from '@/api/buttonManageApi.js'
+    import  {judgeButtonRole} from '@/libs/util.js'
     import  addModifyButton from './add-modify-button.vue'
     export default {
         components:{addModifyButton},
@@ -96,6 +97,11 @@
                 isConfig:false,
                 headerData: {
                     menuTitle: '',
+                },
+                btns:{
+                  'add-buttonManagement':false,//按钮新增
+                  'edit-buttonManagement':false,//按钮编辑
+                  'delete-buttonManagement':false//按钮新增
                 },
                 columns: [
                     {prop: "ButtonCode", label: "按钮编码", minWidth: this.$golbal.littleShortWidth},
@@ -171,6 +177,7 @@
         },
         created() {
             this.getButtonList(this.pageData);
+            this.btns=judgeButtonRole(this.btns,this.$route.path)
         }
     }
 </script>

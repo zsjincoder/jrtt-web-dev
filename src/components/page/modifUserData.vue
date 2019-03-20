@@ -60,9 +60,8 @@
                         </FormItem>
                     </Col>
                     <Col span="12">
-                        <FormItem label="生日">
-                            <DatePicker size="large" type="date" format="yyyy-MM-dd" @on-change="getDate"
-                                        v-model="userData.Brithday" placeholder="选择日期"></DatePicker>
+                        <FormItem label="生日" prop="Brithday">
+                            <DatePicker size="large" type="date" format="yyyy-MM-dd" @on-change="getDate" v-model="userData.Brithday" placeholder="选择日期"></DatePicker>
                         </FormItem>
                     </Col>
                 </Row>

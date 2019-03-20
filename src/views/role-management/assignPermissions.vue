@@ -87,7 +87,7 @@
                 if(res.data.code == 0){
                     this.parentBoxData = res.data.data.parentMenuList != null?res.data.data.parentMenuList:[];
                     this.childBoxData = res.data.data.childMenuList != null?res.data.data.childMenuList:[];
-                    this.buttonData = res.data.data.buttonList;
+                    this.buttonData = res.data.data.buttonList!= null?res.data.data.buttonList:[];
                 }
             })
         },
@@ -175,11 +175,9 @@
                 }
             },
             changeChildBox(item) {
-                console.log(this.childBoxData)
-            },
+            },//测试数据保留
             changeButton() {
-                console.log(this.buttonData)
-            },
+            },//测试数据保留
             _close() {
                 this.$emit("close")
             },

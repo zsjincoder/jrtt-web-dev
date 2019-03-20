@@ -160,6 +160,7 @@
             }
         },
         created() {
+            console.log(this.$route)
             this.btns = judgeButtonRole(this.btns,this.$route.path)
             this.getMenuList();
         }

@@ -11,6 +11,7 @@ export const validatePhoneNum = (rule, value, callback) => {
 };
 //验证日期格式
 export const validateBrithday = (rule, value, callback) => {
+    console.log(123);
     let myDate = new Date();
     let brithDay = new Date(Date.parse(value));
     if (brithDay > myDate) {
