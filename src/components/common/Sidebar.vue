@@ -4,7 +4,7 @@
             text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+                    <el-submenu :index="item.index" :key="item.title">
                         <template slot="title">
                             <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
                         </template>
@@ -29,47 +29,6 @@
         data() {
             return {
                 collapse: false,
-                // items: [
-                //     {
-                //         icon: 'el-icon-setting',
-                //         index: 'dashboard',
-                //         title: '系统首页',
-                //     },
-                //     {
-                //         icon: 'el-icon-warning',
-                //         index: 'showStudent',
-                //         title: '学生信息展示'
-                //     },
-                //     {
-                //         icon: 'el-icon-error',
-                //         index: '404',
-                //         title: '404页面'
-                //     },
-                //     {
-                //         icon: 'el-icon-setting',
-                //         index: '',
-                //         title: '系统管理',
-                //         subs:[
-                //             {
-                //                 index:"userManagement",
-                //                 title:"用户管理"
-                //             },
-                //             {
-                //                 index:"roleManagement",
-                //                 title:"角色管理"
-                //             },
-                //             {
-                //                 index:"menuManagement",
-                //                 title:"菜单管理"
-                //             },
-                //             {
-                //                 index:"buttonManagement",
-                //                 title:"按钮管理"
-                //             }
-                //         ]
-                //     }
-                //
-                // ]
                 items:[]
             }
         },
@@ -85,6 +44,7 @@
             })
             //获取菜单列表
              this.items =JSON.parse(sessionStorage.getItem("MenuList"))
+            console.log(sessionStorage.getItem("MenuList"));
         }
     }
 </script>

@@ -40,13 +40,13 @@
                 if (item) {
                     delItem.path === this.$route.path && this.$router.push(item.path);
                 }else{
-                    this.$router.push('/dashboard');
+                    this.$router.push('/userManagement');
                 }
             },
             // 关闭全部标签
             closeAll(){
                 this.tagsList = [];
-                this.$router.push('/dashboard');
+                this.$router.push('/userManagement');
             },
             // 关闭其他标签
             closeOther(){

@@ -30,6 +30,18 @@
                 :min-width="item.minWidth"
                 :label="item.label">
             </el-table-column>
+            <el-table-column label="用户状态" fixed="right" width="100" >
+                <template slot-scope="scope">
+                    <el-button-group>
+                        <el-switch
+                            v-model="scope.row.key"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949"
+                        @change="change(scope.row)" >
+                        </el-switch>
+                    </el-button-group>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" fixed="right" width="250" v-if="btns['edit-userManagement']||btns['delete-userManagement']||btns['Designatedadministrator-userManagement']||btns['Assignroles-userManagement']">
                 <template slot-scope="scope">
                     <el-button-group>
@@ -81,9 +93,9 @@
 </template>
 
 <script>
-    import {GetUserList, DeleteUser, SetAdmin} from '@/api/userManageApi.js'
+    import {GetUserList, DeleteUser, SetAdmin,ChangeStatus} from '@/api/userManageApi.js'
     import {formatSex} from '@/libs/Formatter.js'
-    import {judgeButtonRole} from '@/libs/util.js'
+    import {judgeButtonRole,renderTime} from '@/libs/util.js'
     import modifyUserInfo from './modify-user-info.vue'
     import prescribedRole from './prescribed-role.vue'
 
@@ -93,6 +105,7 @@
         name: "userTable",
         data() {
             return {
+                switch1:true,
                 isClose: false,//弹窗状态值
                 isClose1:false,//弹窗1状态值
                 rowId: "",//当前行用户ID
@@ -107,7 +120,7 @@
                     {prop: "UserName", label: "用户名", minWidth: this.$golbal.littleShortWidth},
                     {prop: "Mobile", label: "手机号", minWidth: this.$golbal.shortWidth},
                     {prop: "Sex", label: "性别", minWidth: this.$golbal.minWidth, formatter: this.formatterSex},
-                    {prop: "Brithday", label: "生日", minWidth: this.$golbal.littleShortWidth},
+                    {prop: "Brithday", label: "生日", minWidth: this.$golbal.littleShortWidth,formatter:this.formatterBrithday},
                     {prop: "Area", label: "籍贯", minWidth: this.$golbal.littlelongWidth, showOverflowTooltip: true},
                     {
                         prop: "UserIntroduction",
@@ -138,6 +151,15 @@
                 GetUserList(pageData).then(res => {
                     if (res.data.code == 0) {
                         this.tableData = res.data.data.data;
+                        this.tableData.map(function (item) {
+                            console.log(item);
+                            if(item.Status=='1'){
+                                item.key=true;
+                            }else {
+                                item.key=false;
+                            }
+                        })
+                        console.log(this.tableData);
                         this.pageData.pageSize=res.data.data.pageSize;
                         this.pageData.pageNum=res.data.data.pageNum;
                         this.pageData.total=res.data.data.total;
@@ -147,9 +169,28 @@
                     }
                 })
             },//获取用户信息，根据admin获取管理员和普通用户数据
+            change(key){
+                let status;
+                console.log(key);
+
+                if(key.key){
+                    status='1';
+                }else {
+                    status='0';
+                }
+                ChangeStatus({status:status,userId :key.Id}).then(res=>{
+                    if(res.data.code==0){
+                        this.getUserInfo({});
+                    }
+                })
+
+            },
             formatterSex(row, column, cellValue, index) {
                 return formatSex(row, column, cellValue, index);
             },//格式化性别
+            formatterBrithday(row, column, cellValue, index){
+                return  renderTime(row.Brithday)
+            },//生日格式化
             editUserInfo(id) {
                 this.rowId = id;
                 this.isClose = true;

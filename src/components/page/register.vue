@@ -1,10 +1,7 @@
 <template>
     <div class="register-warp">
-
-
         <div class="register-content">
-
-            <Card  style="background: hsla(0, 0%, 100%, .3);border: none">
+            <Card  style="border: none">
                 <p slot="title" class="register-title">用户注册中心</p>
                 <Form ref="formLeft" :model="formLeft" label-position="left" :label-width="60" :rules="rulesData">
                     <FormItem  class="padding-input" label="用户名" prop="UserName">
@@ -114,6 +111,8 @@
 
 <style scoped>
     .register-warp {
+        background: url('/static/img/zc.jpg') no-repeat;
+        background-size: 100% 100%;
         position: relative;
         text-align: center;
         width: 100%;

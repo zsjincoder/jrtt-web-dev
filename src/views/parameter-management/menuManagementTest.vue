@@ -3,19 +3,29 @@
         <div class="header ivu-card">
             <Card dis-hover>
                 <Row>
-                    <Col span="12">
+                    <Col span="6">
                         <div>
-                            <label>所属菜单：</label>
-                            <Input v-model="headerData.menuTitle" placeholder="用户名" style="width:150px"/>
+                            <label>上级菜单：</label>
+                            <Input v-model="headerData.MenuCode" placeholder="上级菜单名" style="width:150px"/>
+                        </div>
+                    </Col>
+                    <Col span="6">
+                        <div>
+                            <label>菜单名：</label>
+                            <Input v-model="headerData.ParentId" placeholder="菜单名" style="width:150px"/>
                         </div>
                     </Col>
                     <Col span="12">
                         <div style="float: right">
                             <Button type="primary" icon="ios-search" @click="Query">查询</Button>
-                            <Button type="success" icon="md-add" @click="AddButton" v-if="btns['add-buttonManagement']">新增</Button>
+                            <Button type="success" icon="md-add" @click="AddRole">新增</Button>
                         </div>
+
                     </Col>
+
                 </Row>
+
+
             </Card>
         </div>
         <div class="table-class">
@@ -36,7 +46,7 @@
                     :formatter="item.formatter"
                     :key="index"
                     :prop="item.prop"
-                    :min-width="item.minWidth"
+                    :width="item.minWidth"
                     :label="item.label">
                 </el-table-column>
                 <el-table-column
@@ -45,23 +55,29 @@
                     v-else
                     :key="index"
                     :prop="item.prop"
-                    :min-width="item.minWidth"
+                    :width="item.minWidth"
                     :label="item.label">
                 </el-table-column>
-                <el-table-column label="操作" fixed="right" width="200" v-if="btns['edit-buttonManagement']||btns['delete-buttonManagement']">
+                <el-table-column label="操作" fixed="right" width="250">
                     <template slot-scope="scope">
                         <el-button-group>
                             <el-button
                                 size="mini"
                                 title="编辑"
                                 icon='el-icon-edit'
-                                @click="editButtonInfo(scope.row.Id)" v-if="btns['edit-buttonManagement']"></el-button>
+                                @click="editMenuInfo(scope.row.Id)"></el-button>
                             <el-button
                                 size="mini"
                                 type="danger"
                                 title="删除"
                                 icon="el-icon-delete"
-                                @click="handleDelete(scope.row.Id)" v-if="btns['delete-buttonManagement']"></el-button>
+                                @click="handleDelete(scope.row.Id)"></el-button>
+                            <el-button
+                                size="mini"
+                                type="primary"
+                                title="分配权限"
+                                icon="el-icon-sort"
+                                @click="handleSetAdmin(scope.row.Id)">分配权限</el-button>
                         </el-button-group>
                     </template>
                 </el-table-column>
@@ -77,17 +93,16 @@
                   :current="pageData.pageNum">
             </Page>
         </div>
-        <add-modify-button v-if="isClose" :isConfig="isConfig" :rowId="rowId" :isClose="isClose" @closeUpdate="closeUpdate" @close="close"></add-modify-button>
+        <add-modify-menu v-if="isClose" :isConfig="isConfig" :rowId="rowId" :isClose="isClose" @closeUpdate="closeUpdate" @close="close"></add-modify-menu>
     </div>
 
 </template>
 
 <script>
-    import {GetButtionList,DeleteButton}from '@/api/buttonManageApi.js'
-    import  {judgeButtonRole} from '@/libs/util.js'
-    import  addModifyButton from './add-modify-button.vue'
+    import {GetMenuList} from '@/api/menuManageApi.js'
+    import addModifyMenu from './add-modify-param.vue'
     export default {
-        components:{addModifyButton},
+        components:{addModifyMenu},
         name: "roleManagement",
         data() {
             return {
@@ -96,19 +111,17 @@
                 rowId: "",//当前行用户ID
                 isConfig:false,
                 headerData: {
-                    menuTitle: '',
-                },
-                btns:{
-                  'add-buttonManagement':false,//按钮新增
-                  'edit-buttonManagement':false,//按钮编辑
-                  'delete-buttonManagement':false//按钮新增
+                    MenuCode: '',
+                    ParentId:''
+
                 },
                 columns: [
-                    {prop: "ButtonCode", label: "按钮编码", minWidth: this.$golbal.littleShortWidth},
-                    {prop: "ButtonName", label: "按钮名称", minWidth: this.$golbal.shortWidth},
-                    {prop: "ButtonPath", label: "按钮路由", minWidth: this.$golbal.shortWidth},
-                    {prop: "MenuTitle", label: "所属菜单", minWidth: this.$golbal.shortWidth},
-                    {prop: "ButtonDescription", label: "按钮功能描述", minWidth: this.$golbal.shortWidth}
+                    {prop:"MenuIcon",label: "菜单图标",Width: this.$golbal.littleShortWidth},
+                    {prop: "MenuCode", label: "菜单ID",Width: this.$golbal.littleShortWidth},
+                    {prop: "Order", label: "菜单序号", Width: this.$golbal.shortWidth},
+                    {prop: "MenuTitle", label: "菜单名", Width: this.$golbal.shortWidth},
+                    {prop: "RoutePath", label: "路由地址", Width: this.$golbal.shortWidth},
+
                 ],
                 pageData: {
                     pageSize: 10,//一页显示几条数据
@@ -118,26 +131,21 @@
             }
         },
         methods: {
-            getButtonList(data) {
-                GetButtionList(data).then(res => {
+            getMenuList(data) {
+                GetMenuList(data).then(res => {
                     if (res.data.code == 0) {
                         this.roleData = res.data.data.data;
-                        this.pageData.pageNum=res.data.data.pageNum;
-                        this.pageData.total=res.data.data.total;
-                        this.pageData.pageSize=res.data.data.pageSize;
                     }
                 })
-            },//获得角色信息列表
+            },//获得菜单信息列表
             Query() {
-                this.pageData.menuTitle = this.headerData.menuTitle;
-                this.pageData.pageNum=1;
-                this.getButtonList(this.pageData);
+                this.pageData.roleName = this.headerData.roleName;
+                this.getMenuList(this.pageData);
             },//根据角色名查询角色列表
-            AddButton(){
-                this.isConfig=false;
+            AddRole(){
                 this.isClose = true;
             },
-            editButtonInfo(Id){
+            editMenuInfo(Id){
                 this.rowId = Id;
                 this.isConfig=true;
                 this.isClose = true;
@@ -147,10 +155,10 @@
                     type: 'warning',
                     callback: (ac, ins) => {
                         if (ac == 'confirm') {
-                            DeleteButton(deletId).then(res => {
+                            DeleteRole({userId:deletId}).then(res => {
                                 if (res.data.code == 0) {
                                     this.$Message.success("删除成功");
-                                    this.getButtonList(this.pageData);
+                                    this.getMenuList(this.pageData);
                                 } else {
                                     this.$Message.error("删除失败");
                                 }
@@ -162,23 +170,22 @@
             },//删除用户
             closeUpdate() {
                 this.isClose = false;//弹窗状态值
-                this.getButtonList(this.pageData)
+                this.getMenuList(this.pageData)
             },//关闭后刷新table
             close() {
                 this.isClose = false;//弹窗状态值
             }, //关闭不刷新
             changePageSize(pageSize){
                 this.pageData.pageSize = pageSize;
-                this.getButtonList(this.pageData);
+                this.getMenuList(this.pageData);
             },// 改变分页条数
             changeCurrentPage(pageNum){
                 this.pageData.pageNum = pageNum;
-                this.getButtonList(this.pageData);
+                this.getMenuList(this.pageData);
             }, // 改变当前页
         },
         created() {
-            this.getButtonList(this.pageData);
-            this.btns=judgeButtonRole(this.btns,this.$route.path)
+            this.getMenuList(this.pageData);
         }
     }
 </script>

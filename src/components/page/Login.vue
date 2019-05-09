@@ -1,14 +1,16 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">后台管理系统</div>
+            <div class="ms-title">新闻后台管理系统</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item class="pading-input" prop="userName">
+                    <span style="margin-right: 5px">用户名：</span>
                     <el-input v-model="ruleForm.userName" placeholder="用户名">
                         <template slot="prepend"></template>
                     </el-input>
                 </el-form-item>
                 <el-form-item class="pading-input" prop="password">
+                    <span style="margin-right: 5px;">密<span style="visibility: hidden">空</span>码：</span>
                     <el-input type="password" placeholder="密码" v-model="ruleForm.password"
                               @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
@@ -18,9 +20,13 @@
                 <div class="login-btn pading-button">
                     <el-button type="success" @click="registerForm">注册</el-button>
                 </div>
-                <p style="font-size:12px;line-height:30px;color:#999; text-align: center">Tips : 用户名和密码随便填。</p>
             </el-form>
-            <i class="iconfont icon-dianpu"></i>
+            <el-input style="visibility: hidden"   placeholder="用户名">
+
+            </el-input>
+            <el-input style="visibility: hidden"   placeholder="用户名">
+
+            </el-input>
         </div>
     </div>
 </template>
@@ -61,11 +67,12 @@
                                             index: item.routePath,
                                             title: item.menuTitle,
                                             icon: item.menuIcon,
-                                        }
+                                        };
                                         let childMenu = this.getChildMenu(item.id, menuData);
                                         if (childMenu.length > 0) {
                                             data.subs = childMenu
                                         }
+                                        console.log(data);
                                         MenuList.push(data)
                                     }
                                 });
@@ -73,7 +80,7 @@
                                 sessionStorage.setItem("ButtonList", JSON.stringify(res.data.data.buttonList));
                                 sessionStorage.setItem("token", res.data.data.token);
                                 sessionStorage.setItem("userInfo", JSON.stringify(res.data.data.userInfo));
-                                this.$router.push('/dashboard');
+                                this.$router.push('/userManagement');
                             } else {
                                 this.$Message.error("登陆失败");
                             }
@@ -111,8 +118,13 @@
 <style scoped>
     .login-wrap {
         position: relative;
+        background: url("/static/img/dl.jpg") no-repeat;
+        background-size: 100% 100%;
         width: 100%;
         height: 100%;
+    }
+    .el-input{
+        width: 80%;
     }
 
     .ms-title {
@@ -126,9 +138,9 @@
 
     .ms-login {
         position: absolute;
-        left: 50%;
+        left: 44%;
         top: 50%;
-        width: 350px;
+        width: 547px;
         margin: -190px 0 0 -175px;
         border-radius: 5px;
         background: hsla(0, 0%, 100%, .3);
@@ -140,7 +152,7 @@
     }
 
     .login-btn button {
-        width: 100%;
+        width: 90%;
     }
 
     .pading-input {

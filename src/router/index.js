@@ -18,22 +18,17 @@ export default new Router({
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[
-                {
-                    path: '/dashboard',
-                    component: resolve => require(['../components/page/Dashboard.vue'], resolve),
-                    meta: { title: '系统首页' }
-                },
-                {
-                    // 富文本编辑器组件
-                    path: '/editor',
-                    component: resolve => require(['../components/page/VueEditor.vue'], resolve),
-                    meta: { title: '富文本编辑器' }
-                },
-                {
-                    path: '/showStudent',
-                    component: resolve => require(['../views/show-student/showStudent.vue'], resolve),
-                    meta: { title: '学生信息展示', permission: true }
-                },
+                // {
+                //     path: '/dashboard',
+                //     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
+                //     meta: { title: '系统首页' }
+                // },
+                // {
+                //     // 富文本编辑器组件
+                //     path: '/editor',
+                //     component: resolve => require(['../components/page/VueEditor.vue'], resolve),
+                //     meta: { title: '富文本编辑器' }
+                // },
                 {
                     path: '/userManagement',
                     component: resolve => require(['../views/user-management/userManagement.vue'], resolve),
@@ -53,7 +48,37 @@ export default new Router({
                     path: '/buttonManagement',
                     component: resolve => require(['../views/button-management/buttonManagement.vue'], resolve),
                     meta: { title:'按钮管理'}
-                }
+                },
+                {
+                    path: '/parameterManagement',
+                    component: resolve => require(['../views/parameter-management/parameterManagement.vue'], resolve),
+                    meta: { title:'参数管理'}
+                },
+                {
+                    path: '/editArticles',
+                    component: resolve => require(['../views/edit-articles/editArticles.vue'], resolve),
+                    meta: { title:'编辑文章'}
+                },
+                {
+                    path: '/articleManagement',
+                    component: resolve => require(['../views/article-management/articleManagement.vue'], resolve),
+                    meta: { title:'文章管理'}
+                },
+                {
+                    path: '/commentModeration',
+                    component: resolve => require(['../views/comment-moderation/commentModeration.vue'], resolve),
+                    meta: { title:'评论审核'}
+                },
+                {
+                    path: '/articleReview',
+                    component: resolve => require(['../views/article-review/articleReview.vue'], resolve),
+                    meta: { title:'文章审核'}
+                },
+                {
+                    path: '/articleAppeals',
+                    component: resolve => require(['../views/article-appeals/articleAppeals.vue'], resolve),
+                    meta: { title:'文章申诉'}
+                },
 
             ]
         },

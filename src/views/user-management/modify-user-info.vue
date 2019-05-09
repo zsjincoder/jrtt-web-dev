@@ -72,6 +72,7 @@
 <script>
     import  {GetUserList,ModifyUserInfo} from '@/api/userManageApi.js'
     import  {validatePhoneNum,validateBrithday} from '@/libs/Validation.js'
+    import  {renderTime} from  '@/libs/util.js'
     export default {
         props:{rowId:String,isClose:Boolean},
         name: "modify-user-info",
@@ -93,6 +94,8 @@
                    if(res.data.code==0){
                        this.formData=res.data.data.data[0];
                        this.newdate=this.formData.Brithday;
+                       // this.newdate=renderTime(this.newdate);
+                       console.log(this.newdate);
                    }
                 })
             },//得到要修改用户的信息

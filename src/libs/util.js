@@ -38,6 +38,7 @@ export const createList=(data)=>{
     }
     return menu
 }
+
 export const childItem= (data , pid)=>{
     let childList = [];
     for (let i =0;i<data.length;i++){
@@ -55,9 +56,15 @@ export const judgeButtonRole=(btns,path)=>{
     for(let i in btns){
         buttonData.map(item =>{
             if(item.buttonPath == path && item.buttonCode == i){
-                btnData[i] = true
+                btnData[i] = true;
             }
         })
     }
     return btnData
 };
+//格式化时间带t
+export  const renderTime=(date)=>{
+    let dateee = new Date(date).toJSON();
+    return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+}
+

@@ -18,6 +18,16 @@ const globalData = {
 
 
     ],
+    Status:[
+        {value:"0",label:"未发布"},
+        {value:"1",label:"已发布"},
+        {value:"2",label:"转发"},
+    ],
+    status:[
+        {value:"0",label:"正常"},
+        {value:"1",label:"冻结"},
+        {value:"2",label:"申述中"}
+    ],
     admin:"1"
 
 

@@ -34,4 +34,12 @@ export const SetAdmin = (data)=>{
         method: 'get',
     })
 }
+//禁用用户
+export const  ChangeStatus=(data)=>{
+    return axios.request({
+        url:'/user/changeUserStatus',
+        params:data,
+        method:'get',
+    })
+}
 
